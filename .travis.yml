@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BTDMG
-{
-    class _
-    {
-    }
-}
+﻿language: csharp
+solution: BTDMG.sln
+dotnet: 3.1
+script:
+ - dotnet restore
