@@ -41,6 +41,23 @@ namespace BTDMG
             CursorOptionData = new CursorOptions(true, true, Assets.CursorTexture);
         }
 
+        protected override void Update(GameTime gameTime)
+        {
+            if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                {
+                    Window.IsBorderless = !Window.IsBorderless;
+                }
+                else
+                {
+                    GDManager.ToggleFullScreen();
+                }
+            }
+
+            base.Update(gameTime);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
