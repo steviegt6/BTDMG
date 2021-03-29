@@ -16,7 +16,8 @@ namespace BTDMG.Source.GameContent
 
         /// <summary>
         ///     Gets the position of something ona path based on the given progress. <br />
-        ///     Supports getting the position from <see cref="Bloon"/>s and <see cref="float"/>s.
+        ///     Supports getting the position from <see cref="Bloon" />s and <see cref="float" />s. <br />
+        ///     If you want to use a <see cref="Bloon" />'s custom positioning logic, call <see cref="Bloon.GetPositionOnPath" />.
         /// </summary>
         /// <param name="progress">The amount something has progressed on a path.</param>
         /// <param name="path">The path to check.</param>
@@ -33,9 +34,9 @@ namespace BTDMG.Source.GameContent
             switch (progress)
             {
                 case Bloon bloon:
-                    pathProgress = bloon.pathProgress;
+                    pathProgress = bloon.Progress;
 
-                    if (path.EscapeDistance <= bloon.pathProgress)
+                    if (path.EscapeDistance <= bloon.Progress)
                         bloon.OnEscape();
                     break;
 
@@ -57,7 +58,5 @@ namespace BTDMG.Source.GameContent
 
             return (path.PathPoints[point] - pathPoint) * toNextPoint + pathPoint;
         }
-
-        public Vector2 GetPositionFromPath(float progress, int path) => GetPositionFromPath(progress, Paths[path]);
     }
 }
