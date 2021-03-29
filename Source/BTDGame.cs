@@ -1,5 +1,7 @@
-﻿using BTDMG.Source.GameContent.Assets;
+﻿using System;
+using BTDMG.Source.GameContent.Assets;
 using BTDMG.Source.Internals.Framework.DataStructures.Drawing;
+using BTDMG.Source.Internals.IDs;
 using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +26,7 @@ namespace BTDMG.Source
             IsMouseVisible = false;
             Window.AllowUserResizing = true;
             Instance = this;
+            WindowMode = WindowType.Windowed;
         }
 
         public static BTDGame Instance { get; private set; }
@@ -38,6 +41,11 @@ namespace BTDMG.Source
         /// </summary>
         public static SpriteBatch GenericSB { get; private set; }
 
+        /// <summary>
+        ///     The current window mode the game is in. Use <see cref="CycleWindowMode"/> or <see cref="SetWindowMode"/> to change modes.
+        /// </summary>
+        public static WindowType WindowMode { get; private set; }
+
         protected override void LoadContent()
         {
             GenericSB = new SpriteBatch(GraphicsDevice);
@@ -49,27 +57,8 @@ namespace BTDMG.Source
 
         protected override void Update(GameTime gameTime)
         {
-            Window.IsBorderless = true;
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
-            {
-                if (GDManager.IsFullScreen)
-                {
-                    if (Window.IsBorderless)
-                    {
-                        //Window.IsBorderless = false;
-                        GDManager.ToggleFullScreen();
-                    }
-                    else
-                    {
-                        Window.IsBorderless = true;
-                        GDManager.ApplyChanges();
-                    }
-                }
-                else
-                {
-                    GDManager.ToggleFullScreen();
-                }
-            }
+                CycleWindowMode();
 
             base.Update(gameTime);
         }
@@ -82,6 +71,56 @@ namespace BTDMG.Source
             GenericSB.End();
 
             base.Draw(gameTime);
+        }
+
+        public void CycleWindowMode()
+        {
+            switch (WindowMode)
+            {
+                case WindowType.Windowed:
+                    SetWindowMode(Environment.OSVersion.Platform != PlatformID.MacOSX
+                        ? WindowType.Borderless
+                        : WindowType.Fullscreen);
+                    break;
+
+                case WindowType.Borderless:
+                    SetWindowMode(WindowType.Fullscreen);
+                    break;
+
+                case WindowType.Fullscreen:
+                    SetWindowMode(WindowType.Windowed);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void SetWindowMode(WindowType type)
+        {
+            switch (type)
+            {
+                case WindowType.Windowed:
+                    GDManager.IsFullScreen = false;
+                    Window.IsBorderless = false;
+                    break;
+
+                case WindowType.Borderless:
+                    GDManager.IsFullScreen = false;
+                    Window.IsBorderless = true;
+                    break;
+
+                case WindowType.Fullscreen:
+                    GDManager.IsFullScreen = true;
+                    Window.IsBorderless = false;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+
+            GDManager.ApplyChanges();
+            WindowMode = type;
         }
 
         private static void InitializeSpriteBatches()
