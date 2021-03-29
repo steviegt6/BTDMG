@@ -26,7 +26,7 @@ namespace BTDMG.Source
         /// <summary>
         ///     Cursor drawing options. The cursor will always be drawn on top of everything else in the game.
         /// </summary>
-        public static CursorOptions CursorOptionData;
+        public static CursorDrawOptions cursorDrawOptionData;
 
         /// <summary>
         ///     <see cref="GraphicsDeviceManager" /> used by <see cref="BTDGame" />.
@@ -44,7 +44,7 @@ namespace BTDMG.Source
 
             AssetLoader.Load(Content);
 
-            CursorOptionData = new CursorOptions(true, true, Assets.CursorTexture);
+            cursorDrawOptionData = new CursorDrawOptions(true, true, Assets.CursorTexture);
         }
 
         protected override void Update(GameTime gameTime)
