@@ -1,4 +1,4 @@
-﻿using BTDMG.Source.Internals.Assets;
+﻿using BTDMG.Source.GameContent.Assets;
 using BTDMG.Source.Internals.DataStructures.Drawing;
 using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;

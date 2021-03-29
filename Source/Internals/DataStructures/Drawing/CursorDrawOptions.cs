@@ -1,4 +1,5 @@
-﻿using BTDMG.Source.Internals.Utilities;
+﻿using BTDMG.Source.GameContent.Assets;
+using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -60,7 +61,7 @@ namespace BTDMG.Source.Internals.DataStructures.Drawing
                 try
                 {
                     spriteBatch.Draw(cursorDrawOptions.customCursorTexture, Mouse.GetState().Position.ToVector2(), null,
-                        cursorDrawOptions.customCursorTint, 0f, Assets.Assets.CursorTexture.Size() / 2f, Vector2.One,
+                        cursorDrawOptions.customCursorTint, 0f, Assets.CursorTexture.Size() / 2f, Vector2.One,
                         SpriteEffects.None, 1f);
                 }
                 catch
