@@ -15,7 +15,8 @@ namespace BTDMG.Source.GameContent
         public List<BloonPath> Paths { get; }
 
         /// <summary>
-        ///     Gets the position of something ona path based on the given progress.
+        ///     Gets the position of something ona path based on the given progress. <br />
+        ///     Supports getting the position from <see cref="Bloon"/>s and <see cref="float"/>s.
         /// </summary>
         /// <param name="progress">The amount something has progressed on a path.</param>
         /// <param name="path">The path to check.</param>
