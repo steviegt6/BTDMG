@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace BTDMG.Internals.Assets
+namespace BTDMG.Source.Internals.Assets
 {
     public static class Assets
     {

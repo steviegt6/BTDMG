@@ -1,7 +1,7 @@
-﻿using BTDMG.Internals.Utilities;
+﻿using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework.Content;
 
-namespace BTDMG.Internals.Assets
+namespace BTDMG.Source.Internals.Assets
 {
     // TODO: Mods will use their own asset loader.
     /// <summary>

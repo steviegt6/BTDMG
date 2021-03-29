@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
-namespace BTDMG.Internals.Utilities
+namespace BTDMG.Source.Internals.Utilities
 {
     public static class KeyUtils
     {

@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BTDMG.Source.Internals.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-namespace BTDMG.Internals.DataStructures.Drawing
+namespace BTDMG.Source.Internals.DataStructures.Drawing
 {
     public readonly struct CursorOptions
     {
@@ -28,6 +30,25 @@ namespace BTDMG.Internals.DataStructures.Drawing
             DrawCustomCursorTexture = drawCustomCursorTexture;
             CustomCursorTexture = customCursorTexture;
             CursorColor = Color.White;
+        }
+
+        public static void Draw(CursorOptions cursorOptions, SpriteBatch spriteBatch)
+        {
+            if (cursorOptions.DrawCursor)
+            {
+                BTDGame.Instance.IsMouseVisible = !cursorOptions.DrawCustomCursorTexture;
+
+                if (cursorOptions.DrawCustomCursorTexture)
+                {
+                    spriteBatch.Draw(cursorOptions.CustomCursorTexture, Mouse.GetState().Position.ToVector2(), null,
+                        cursorOptions.CursorColor, 0f, Assets.Assets.CursorTexture.Size() / 2f, Vector2.One,
+                        SpriteEffects.None, 1f);
+                }
+            }
+            else
+            {
+                BTDGame.Instance.IsMouseVisible = false;
+            }
         }
     }
 }

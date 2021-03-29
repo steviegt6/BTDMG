@@ -1,18 +1,18 @@
-﻿using BTDMG.Internals.Assets;
-using BTDMG.Internals.DataStructures.Drawing;
-using BTDMG.Internals.Utilities;
+﻿using BTDMG.Source.Internals.Assets;
+using BTDMG.Source.Internals.DataStructures.Drawing;
+using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BTDMG
+namespace BTDMG.Source
 {
-    public class BTDGame : Game
+    /// <summary>
+    /// Main game class.
+    /// </summary>
+    public sealed class BTDGame : Game
     {
-        /// <summary>
-        ///     Cursor drawing options. The cursor will always be drawn on top of everything else in the game.
-        /// </summary>
-        public static CursorOptions CursorOptionData;
+        public static BTDGame Instance { get; private set; }
 
         internal BTDGame()
         {
@@ -20,7 +20,13 @@ namespace BTDMG
             Content.RootDirectory = "Content";
             IsMouseVisible = false;
             Window.AllowUserResizing = true;
+            Instance = this;
         }
+
+        /// <summary>
+        ///     Cursor drawing options. The cursor will always be drawn on top of everything else in the game.
+        /// </summary>
+        public static CursorOptions CursorOptionData;
 
         /// <summary>
         ///     <see cref="GraphicsDeviceManager" /> used by <see cref="BTDGame" />.
@@ -43,11 +49,21 @@ namespace BTDMG
 
         protected override void Update(GameTime gameTime)
         {
+            Window.IsBorderless = true;
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                if (GDManager.IsFullScreen)
                 {
-                    Window.IsBorderless = !Window.IsBorderless;
+                    if (Window.IsBorderless)
+                    {
+                        //Window.IsBorderless = false;
+                        GDManager.ToggleFullScreen();
+                    }
+                    else
+                    {
+                        Window.IsBorderless = true;
+                        GDManager.ApplyChanges();
+                    }
                 }
                 else
                 {
@@ -61,28 +77,22 @@ namespace BTDMG
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            GenericSB.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.Default, RasterizerState.CullCounterClockwise, null, Matrix.Identity);
-
-            if (CursorOptionData.DrawCursor)
-            {
-                IsMouseVisible = !CursorOptionData.DrawCustomCursorTexture;
-
-                if (CursorOptionData.DrawCustomCursorTexture)
-                {
-                    GenericSB.Draw(CursorOptionData.CustomCursorTexture, Mouse.GetState().Position.ToVector2(), null,
-                        CursorOptionData.CursorColor, 0f, Assets.CursorTexture.Size() / 2f, Vector2.One,
-                        SpriteEffects.None, 1f);
-                }
-            }
-            else
-            {
-                IsMouseVisible = false;
-            }
+            InitializeSpriteBatches();
 
             GenericSB.End();
 
             base.Draw(gameTime);
+        }
+
+        private static void InitializeSpriteBatches()
+        {
+            GenericSB.Begin(SpriteSortMode.FrontToBack,
+                BlendState.AlphaBlend,
+                SamplerState.LinearClamp,
+                DepthStencilState.Default,
+                RasterizerState.CullCounterClockwise,
+                null,
+                Matrix.Identity);
         }
     }
 }

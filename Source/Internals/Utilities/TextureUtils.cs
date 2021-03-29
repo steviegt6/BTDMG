@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace BTDMG.Internals.Utilities
+namespace BTDMG.Source.Internals.Utilities
 {
     public static class TextureUtils
     {
