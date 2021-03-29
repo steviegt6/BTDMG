@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using BTDMG.Source.GameContent.Assets;
 using BTDMG.Source.Internals.Framework.DataStructures.Drawing;
 using BTDMG.Source.Internals.IDs;
@@ -22,11 +23,15 @@ namespace BTDMG.Source
         internal BTDGame()
         {
             GDManager = new GraphicsDeviceManager(this);
+
             Content.RootDirectory = "Content";
+
             IsMouseVisible = false;
             Window.AllowUserResizing = true;
-            Instance = this;
             WindowMode = WindowType.Windowed;
+            Window.ClientSizeChanged += HandleWindowResizing;
+
+            Instance = this;
         }
 
         public static BTDGame Instance { get; private set; }
@@ -119,8 +124,25 @@ namespace BTDMG.Source
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
 
-            GDManager.ApplyChanges();
             WindowMode = type;
+        }
+
+        public void HandleWindowResizing(object? sender, EventArgs e)
+        {
+            if (!GDManager.IsFullScreen && !Window.IsBorderless)
+                return;
+
+            GDManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            GDManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+
+            try
+            {
+                GDManager.ApplyChanges();
+            }
+            catch (StackOverflowException)
+            {
+                // what
+            }
         }
 
         private static void InitializeSpriteBatches()
