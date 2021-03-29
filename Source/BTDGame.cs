@@ -8,11 +8,14 @@ using Microsoft.Xna.Framework.Input;
 namespace BTDMG.Source
 {
     /// <summary>
-    /// Main game class.
+    ///     Main game class.
     /// </summary>
     public sealed class BTDGame : Game
     {
-        public static BTDGame Instance { get; private set; }
+        /// <summary>
+        ///     Cursor drawing options. The cursor will always be drawn on top of everything else in the game.
+        /// </summary>
+        public static CursorDrawOptions cursorDrawOptionData;
 
         internal BTDGame()
         {
@@ -23,10 +26,7 @@ namespace BTDMG.Source
             Instance = this;
         }
 
-        /// <summary>
-        ///     Cursor drawing options. The cursor will always be drawn on top of everything else in the game.
-        /// </summary>
-        public static CursorDrawOptions cursorDrawOptionData;
+        public static BTDGame Instance { get; private set; }
 
         /// <summary>
         ///     <see cref="GraphicsDeviceManager" /> used by <see cref="BTDGame" />.
