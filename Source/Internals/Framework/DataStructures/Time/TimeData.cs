@@ -15,11 +15,5 @@ namespace BTDMG.Source.Internals.Framework.DataStructures.Time
             this.tick = tick;
             this.time = time;
         }
-
-        public TimeData(GameTime time)
-        {
-            tick = time.TotalGameTime.Ticks;
-            this.time = time;
-        }
     }
 }

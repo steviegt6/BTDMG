@@ -30,8 +30,7 @@ namespace BTDMG.Source
             Content.RootDirectory = "Content";
             
             Window.AllowUserResizing = true;
-            WindowMode = WindowType.Windowed;
-            //Window.ClientSizeChanged += HandleWindowResizing;
+            Window.ClientSizeChanged += HandleWindowResizing;
 
             Instance = this;
         }
@@ -51,12 +50,14 @@ namespace BTDMG.Source
         /// <summary>
         ///     The current window mode the game is in. Use <see cref="CycleWindowMode"/> or <see cref="SetWindowMode"/> to change modes.
         /// </summary>
-        public static WindowType WindowMode { get; private set; }
+        public static WindowType WindowMode { get; private set; } = WindowType.Windowed;
 
         /// <summary>
         ///     A dictionary used for storing times. Useful for cleaner pseudo-timers with <see cref="GameTime"/>.
         /// </summary>
         public static Dictionary<string, TimeCapsule> TimeCapsules { get; } = new Dictionary<string, TimeCapsule>();
+
+        public static long TotalGameTicks;
 
         protected override void LoadContent()
         {
@@ -69,22 +70,19 @@ namespace BTDMG.Source
 
         protected override void Update(GameTime gameTime)
         {
+            TotalGameTicks++;
+
             foreach (TimeCapsule timeCapsule in TimeCapsules.Keys.ToList().Select(key => TimeCapsules[key]))
-            {
-                // I hate this
-                TimeCapsule capsule = timeCapsule;
-                capsule.currentTime = new TimeData(gameTime);
-            }
+                timeCapsule.UpdateCurrent(gameTime, TotalGameTicks);
 
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
             {
-                if (!TimeCapsules.TryGetValue(BTDMGTimeCapsuleID.CycleWindowCapsule, out TimeCapsule capsule))
-                    TimeCapsules[BTDMGTimeCapsuleID.CycleWindowCapsule] = new TimeCapsule(new TimeData(gameTime));
+                TimeCapsules.GetOrCreate(BTDMGTimeCapsuleID.CycleWindowCapsule, new TimeCapsule(gameTime, TotalGameTicks), out TimeCapsule capsule);
 
                 if (capsule.Valid(10))
                 {
                     CycleWindowMode();
-                    capsule.UpdateCache(gameTime);
+                    capsule.UpdateCache(gameTime, TotalGameTicks);
                 }
             }
 
@@ -99,8 +97,6 @@ namespace BTDMG.Source
             CursorDrawOptions.Draw(cursorDrawOptionData, GenericSB);
 
             GenericSB.End();
-
-            base.Draw(gameTime);
         }
 
         public void CycleWindowMode()
@@ -150,6 +146,7 @@ namespace BTDMG.Source
             }
 
             WindowMode = type;
+            GDManager.ApplyChanges();
         }
 
         public void HandleWindowResizing(object? sender, EventArgs e)
