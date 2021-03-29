@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
@@ -14,30 +15,48 @@ namespace BTDMG.Source.GameContent
         public List<BloonPath> Paths { get; }
 
         /// <summary>
-        ///     Gets the position of a <see cref="Bloon" /> on the path.
+        ///     Gets the position of something ona path based on the given progress.
         /// </summary>
-        /// <param name="bloon"></param>
+        /// <param name="progress">The amount something has progressed on a path.</param>
+        /// <param name="path">The path to check.</param>
         /// <returns></returns>
-        public Vector2 GetBloonPosition(Bloon bloon)
+        public Vector2 GetPositionFromPath<TProgress>(TProgress progress, BloonPath path)
         {
-            BloonPath bloonPath = Paths[bloon.path];
+            if (!(progress is Bloon) && !(progress is float))
+                throw new InvalidOperationException("Unable to calculate the path based on the given object!");
+
+            float pathProgress = 0f;
             float guess = -1;
             int point = 0;
 
-            if (bloonPath.EscapeDistance <= bloon.pathProgress)
-                bloon.Escape();
+            switch (progress)
+            {
+                case Bloon bloon:
+                    pathProgress = bloon.pathProgress;
 
-            foreach (float dist in Paths[bloon.path].PathLengths.Where(x => guess < bloon.pathProgress))
+                    if (path.EscapeDistance <= bloon.pathProgress)
+                        bloon.Escape();
+                    break;
+
+
+                case float rawProgress:
+                    pathProgress = rawProgress;
+                    break;
+            }
+
+            foreach (float dist in path.PathLengths.Where(x => guess < pathProgress))
             {
                 point++;
                 guess += dist;
             }
 
-            Vector2 pathPoint = bloonPath.PathPoints[point - 1];
-            float guessLength = guess - bloonPath.PathLengths[point - 1];
-            float toNextPoint = (bloon.pathProgress - guessLength) / guess - guessLength;
+            Vector2 pathPoint = path.PathPoints[point - 1];
+            float guessLength = guess - path.PathLengths[point - 1];
+            float toNextPoint = (pathProgress - guessLength) / guess - guessLength;
 
-            return (bloonPath.PathPoints[point] - pathPoint) * toNextPoint + pathPoint;
+            return (path.PathPoints[point] - pathPoint) * toNextPoint + pathPoint;
         }
+
+        public Vector2 GetPositionFromPath(float progress, int path) => GetPositionFromPath(progress, Paths[path]);
     }
 }
