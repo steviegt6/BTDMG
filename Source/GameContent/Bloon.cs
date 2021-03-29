@@ -1,11 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BTDMG.Source.Internals.Framework.EntityFramework;
+using Microsoft.Xna.Framework;
 
 namespace BTDMG.Source.GameContent
 {
     /// <summary>
-    ///     The class containing information about a Bloon.
+    ///     The class containing information about a <see cref="Bloon"/>. <br />
+    ///     Extends <see cref="TexturedEntity"/>.
     /// </summary>
-    public abstract class Bloon
+    public abstract class Bloon : TexturedEntity
     {
         /// <summary>
         ///     The path the <see cref="Bloon" /> is on.

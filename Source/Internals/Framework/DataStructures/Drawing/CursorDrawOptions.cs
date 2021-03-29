@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BTDMG.Source.Internals.DataStructures.Drawing
+namespace BTDMG.Source.Internals.Framework.DataStructures.Drawing
 {
     /// <summary>
     ///     Struct containing information about how to draw the cursor.

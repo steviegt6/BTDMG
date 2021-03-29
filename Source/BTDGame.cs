@@ -1,5 +1,5 @@
 ﻿using BTDMG.Source.GameContent.Assets;
-using BTDMG.Source.Internals.DataStructures.Drawing;
+using BTDMG.Source.Internals.Framework.DataStructures.Drawing;
 using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
