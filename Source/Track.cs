@@ -18,21 +18,17 @@ namespace BTDMG.Source
         }
 
         /// <summary>
-        /// Gets the position of a <see cref="Bloon"/> on the path.
+        /// Gets the position of something on a path.
         /// </summary>
-        /// <param name="bloon"></param>
+        /// <param name="progress"></param>
+        /// <param name="pathNo"></param>
         /// <returns></returns>
-        public Vector2 GetPathPosition(Bloon bloon)
+        public Vector2 GetPathPosition(float progress, int pathNo)
         {
-            float progress = bloon.Progress;
             float guess = -1;
             int point = 0;
-            Path path = Paths[bloon.Path];
-            if (path.Escape <= bloon.Progress)
-            {
-                bloon.Escape();
-            }
-            foreach (float dist in Paths[bloon.Path].PathLengths)
+            Path path = Paths[pathNo];
+            foreach (float dist in Paths[pathNo].PathLengths)
             {
                 if (guess < progress)
                 {
@@ -50,7 +46,7 @@ namespace BTDMG.Source
 
             float lengthRelative = length2 - length1;
 
-            float toNextPoint = bloon.Progress - length1;
+            float toNextPoint = progress - length1;
             toNextPoint /= lengthRelative;
 
             Vector2 fromPoint = relative * toNextPoint;
