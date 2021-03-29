@@ -73,7 +73,7 @@ namespace BTDMG.Source
             {
                 // I hate this
                 TimeCapsule capsule = timeCapsule;
-                capsule.currentTime = new TimeData(gameTime.TotalGameTime.Ticks, gameTime);
+                capsule.currentTime = new TimeData(gameTime);
             }
 
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
@@ -95,6 +95,8 @@ namespace BTDMG.Source
         {
             GraphicsDevice.Clear(Color.Black);
             InitializeSpriteBatches();
+
+            CursorDrawOptions.Draw(cursorDrawOptionData, GenericSB);
 
             GenericSB.End();
 
