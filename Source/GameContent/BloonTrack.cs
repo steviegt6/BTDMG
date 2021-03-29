@@ -36,7 +36,7 @@ namespace BTDMG.Source.GameContent
                     pathProgress = bloon.pathProgress;
 
                     if (path.EscapeDistance <= bloon.pathProgress)
-                        bloon.Escape();
+                        bloon.OnEscape();
                     break;
 
 

@@ -18,6 +18,6 @@
         /// <summary>
         ///     Called when a bloon escapes a path.
         /// </summary>
-        public virtual void Escape() { }
+        public virtual void OnEscape() { }
     }
 }
