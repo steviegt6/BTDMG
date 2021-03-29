@@ -1,7 +1,10 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using BTDMG.Source.GameContent.Assets;
 using BTDMG.Source.Internals.Framework.DataStructures.Drawing;
+using BTDMG.Source.Internals.Framework.DataStructures.Time;
 using BTDMG.Source.Internals.IDs;
 using BTDMG.Source.Internals.Utilities;
 using Microsoft.Xna.Framework;
@@ -25,31 +28,35 @@ namespace BTDMG.Source
             GDManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
-
-            IsMouseVisible = false;
+            
             Window.AllowUserResizing = true;
             WindowMode = WindowType.Windowed;
-            Window.ClientSizeChanged += HandleWindowResizing;
+            //Window.ClientSizeChanged += HandleWindowResizing;
 
             Instance = this;
         }
 
-        public static BTDGame Instance { get; private set; }
+        public static BTDGame Instance { get; private set; } = null!;
 
         /// <summary>
         ///     <see cref="GraphicsDeviceManager" /> used by <see cref="BTDGame" />.
         /// </summary>
-        public static GraphicsDeviceManager GDManager { get; private set; }
+        public static GraphicsDeviceManager GDManager { get; private set; } = null!;
 
         /// <summary>
         ///     A generic <see cref="SpriteBatch" /> used for common drawing.
         /// </summary>
-        public static SpriteBatch GenericSB { get; private set; }
+        public static SpriteBatch GenericSB { get; private set; } = null!;
 
         /// <summary>
         ///     The current window mode the game is in. Use <see cref="CycleWindowMode"/> or <see cref="SetWindowMode"/> to change modes.
         /// </summary>
         public static WindowType WindowMode { get; private set; }
+
+        /// <summary>
+        ///     A dictionary used for storing times. Useful for cleaner pseudo-timers with <see cref="GameTime"/>.
+        /// </summary>
+        public static Dictionary<string, TimeCapsule> TimeCapsules { get; } = new Dictionary<string, TimeCapsule>();
 
         protected override void LoadContent()
         {
@@ -62,8 +69,24 @@ namespace BTDMG.Source
 
         protected override void Update(GameTime gameTime)
         {
+            foreach (TimeCapsule timeCapsule in TimeCapsules.Keys.ToList().Select(key => TimeCapsules[key]))
+            {
+                // I hate this
+                TimeCapsule capsule = timeCapsule;
+                capsule.currentTime = new TimeData(gameTime.TotalGameTime.Ticks, gameTime);
+            }
+
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
-                CycleWindowMode();
+            {
+                if (!TimeCapsules.TryGetValue(BTDMGTimeCapsuleID.CycleWindowCapsule, out TimeCapsule capsule))
+                    TimeCapsules[BTDMGTimeCapsuleID.CycleWindowCapsule] = new TimeCapsule(new TimeData(gameTime));
+
+                if (capsule.Valid(10))
+                {
+                    CycleWindowMode();
+                    capsule.UpdateCache(gameTime);
+                }
+            }
 
             base.Update(gameTime);
         }
