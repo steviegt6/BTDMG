@@ -3,7 +3,7 @@
 namespace BTDMG.Source.Internals.Framework.DataStructures.Time
 {
     /// <summary>
-    ///     A struct that holds two instances of <see cref="TimeData"/>, a cached instance and an up-to-date instance to compare against.
+    ///     Not a struct, but a class that holds two instances of <see cref="TimeData"/>, a cached instance and an up-to-date instance to compare against.
     /// </summary>
     public class TimeCapsule
     {
