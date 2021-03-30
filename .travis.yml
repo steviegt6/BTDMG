@@ -1,9 +1,15 @@
 ﻿language: csharp
+solution: BTDMG.sln # solution parameter allows travis to automatically restore nuget packages and build the sln
+dotnet: 3.1 # <- needed since we're on net core 3.1
+# TODO: update to dotnet 5.0?
+
 os:
 - linux
 - osx
 - windows
-solution: BTDMG.sln
-dotnet: 3.1
+
+mono: 
+- latest
+
 script:
- - dotnet restore
+- dotnet restore # <- needed since we're on net core 3.1
