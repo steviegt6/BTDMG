@@ -8,8 +8,8 @@ os:
 - osx
 - windows
 
-mono: 
-- latest
+# mono: # not needed, on net core
+# - latest
 
 script:
 - dotnet restore # <- needed since we're on net core 3.1
