@@ -21,7 +21,7 @@ namespace BTDMG.Source.Internals.Utilities
         /// <returns>The newly-loaded <see cref="Texture2D" />.</returns>
         public static Texture2D LoadTex2D(string filePath, GraphicsDevice graphicsDevice)
         {
-            using FileStream stream = new FileStream(filePath, FileMode.Open);
+            using FileStream stream = new(filePath, FileMode.Open);
             return Texture2D.FromStream(graphicsDevice, stream);
         }
 
@@ -31,6 +31,6 @@ namespace BTDMG.Source.Internals.Utilities
         /// </summary>
         /// <param name="texture">The <see cref="Texture2D" /> instance you want to retrieve the size of.</param>
         /// <returns>A <see cref="Vector2" /> with the dimensions of the <see cref="Texture2D" />.</returns>
-        public static Vector2 Size(this Texture2D texture) => new Vector2(texture.Width, texture.Height);
+        public static Vector2 Size(this Texture2D texture) => new(texture.Width, texture.Height);
     }
 }

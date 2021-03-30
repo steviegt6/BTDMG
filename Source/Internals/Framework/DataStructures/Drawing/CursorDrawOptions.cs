@@ -61,7 +61,7 @@ namespace BTDMG.Source.Internals.Framework.DataStructures.Drawing
                 try
                 {
                     spriteBatch.Draw(cursorDrawOptions.customCursorTexture, Mouse.GetState().Position.ToVector2(), null,
-                        cursorDrawOptions.customCursorTint, 0f, Assets.CursorTexture.Size() / 2f, Vector2.One,
+                        cursorDrawOptions.customCursorTint, 0f, TextureAssets.CursorTexture.Size() / 2f, Vector2.One,
                         SpriteEffects.None, 1f);
                 }
                 catch

@@ -13,7 +13,7 @@ namespace BTDMG.Source
         [STAThread]
         public static void Main()
         {
-            using BTDGame game = new BTDGame();
+            using BTDGame game = new();
             game.Run();
         }
     }

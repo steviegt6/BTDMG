@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using BTDMG.Source.GameContent.Assets;
+using BTDMG.Source.Internals.Framework.AssetFramework;
 using BTDMG.Source.Internals.Framework.DataStructures.Drawing;
 using BTDMG.Source.Internals.Framework.DataStructures.Time;
 using BTDMG.Source.Internals.IDs;
@@ -23,14 +23,15 @@ namespace BTDMG.Source
         /// </summary>
         public static CursorDrawOptions cursorDrawOptionData;
 
+        public static long TotalGameTicks;
+
         internal BTDGame()
         {
             GDManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
-            
+
             Window.AllowUserResizing = true;
-            Window.ClientSizeChanged += HandleWindowResizing;
 
             Instance = this;
         }
@@ -48,24 +49,23 @@ namespace BTDMG.Source
         public static SpriteBatch GenericSB { get; private set; } = null!;
 
         /// <summary>
-        ///     The current window mode the game is in. Use <see cref="CycleWindowMode"/> or <see cref="SetWindowMode"/> to change modes.
+        ///     The current window mode the game is in. Use <see cref="WindowUtils.CycleWindowMode" /> or <see cref="WindowUtils.SetWindowMode" /> to
+        ///     change modes.
         /// </summary>
-        public static WindowType WindowMode { get; private set; } = WindowType.Windowed;
+        public static WindowType WindowMode { get; internal set; } = WindowType.Windowed;
 
         /// <summary>
-        ///     A dictionary used for storing times. Useful for cleaner pseudo-timers with <see cref="GameTime"/>.
+        ///     A dictionary used for storing times. Useful for cleaner pseudo-timers with <see cref="GameTime" />.
         /// </summary>
-        public static Dictionary<string, TimeCapsule> TimeCapsules { get; } = new Dictionary<string, TimeCapsule>();
-
-        public static long TotalGameTicks;
+        public static Dictionary<string, TimeCapsule> TimeCapsules { get; } = new();
 
         protected override void LoadContent()
         {
             GenericSB = new SpriteBatch(GraphicsDevice);
 
-            AssetLoader.Load(Content);
+            AssetLoader.LoadAssets();
 
-            cursorDrawOptionData = new CursorDrawOptions(true, true, Assets.CursorTexture);
+            cursorDrawOptionData = new CursorDrawOptions(true, true, TextureAssets.CursorTexture);
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,11 +77,12 @@ namespace BTDMG.Source
 
             if (Keyboard.GetState().AreKeysDown(Keys.LeftAlt, Keys.Enter))
             {
-                TimeCapsules.GetOrCreate(BTDMGTimeCapsuleID.CycleWindowCapsule, new TimeCapsule(gameTime, TotalGameTicks), out TimeCapsule capsule);
+                TimeCapsules.GetOrCreate(BTDMGTimeCapsuleID.CycleWindowCapsule,
+                    new TimeCapsule(gameTime, TotalGameTicks), out TimeCapsule capsule);
 
                 if (capsule.Valid(10))
                 {
-                    CycleWindowMode();
+                    // WindowUtils.CycleWindowMode();
                     capsule.UpdateCache(gameTime, TotalGameTicks);
                 }
             }
@@ -97,74 +98,6 @@ namespace BTDMG.Source
             CursorDrawOptions.Draw(cursorDrawOptionData, GenericSB);
 
             GenericSB.End();
-        }
-
-        public void CycleWindowMode()
-        {
-            switch (WindowMode)
-            {
-                case WindowType.Windowed:
-                    SetWindowMode(Environment.OSVersion.Platform != PlatformID.MacOSX
-                        ? WindowType.Borderless
-                        : WindowType.Fullscreen);
-                    break;
-
-                case WindowType.Borderless:
-                    SetWindowMode(WindowType.Fullscreen);
-                    break;
-
-                case WindowType.Fullscreen:
-                    SetWindowMode(WindowType.Windowed);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void SetWindowMode(WindowType type)
-        {
-            switch (type)
-            {
-                case WindowType.Windowed:
-                    GDManager.IsFullScreen = false;
-                    Window.IsBorderless = false;
-                    break;
-
-                case WindowType.Borderless:
-                    GDManager.IsFullScreen = false;
-                    Window.IsBorderless = true;
-                    break;
-
-                case WindowType.Fullscreen:
-                    GDManager.IsFullScreen = true;
-                    Window.IsBorderless = false;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
-
-            WindowMode = type;
-            GDManager.ApplyChanges();
-        }
-
-        public void HandleWindowResizing(object? sender, EventArgs e)
-        {
-            if (!GDManager.IsFullScreen && !Window.IsBorderless)
-                return;
-
-            GDManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            GDManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-
-            try
-            {
-                GDManager.ApplyChanges();
-            }
-            catch (StackOverflowException)
-            {
-                // what
-            }
         }
 
         private static void InitializeSpriteBatches()
